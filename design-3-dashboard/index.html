@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Orlando 2026 — Control Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1020;
+    --bg2:#0f1730;
+    --panel:rgba(22,30,54,.66);
+    --panel-solid:#151d36;
+    --stroke:rgba(255,255,255,.10);
+    --stroke-strong:rgba(255,255,255,.18);
+    --text:#eef2ff;
+    --muted:#9aa6c8;
+    --muted2:#7683a8;
+    --accent:#E8923D;
+    --accent-2:#17A8A4;
+    --good:#37d6a0;
+    --warn:#ffcf5c;
+    --danger:#ff7a7a;
+    --radius:20px;
+    --radius-sm:14px;
+    --glow:0 0 0 1px var(--stroke), 0 18px 40px -18px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1100px 700px at 12% -8%, rgba(109,74,214,.22), transparent 60%),
+      radial-gradient(900px 600px at 95% 0%, rgba(23,168,164,.18), transparent 55%),
+      radial-gradient(800px 800px at 50% 120%, rgba(232,146,61,.12), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    background-attachment:fixed;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px 64px}
+
+  /* ---------- TOP APP BAR ---------- */
+  .appbar{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    background:linear-gradient(180deg, rgba(11,16,32,.92), rgba(11,16,32,.66));
+    border-bottom:1px solid var(--stroke);
+  }
+  .appbar-inner{
+    max-width:1080px;margin:0 auto;padding:12px 16px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 auto}
+  .brand .logo{
+    width:42px;height:42px;flex:none;border-radius:13px;
+    display:grid;place-items:center;font-size:22px;
+    background:linear-gradient(145deg,#6D4AD6,#17A8A4);
+    box-shadow:0 8px 22px -8px rgba(109,74,214,.8), inset 0 0 0 1px rgba(255,255,255,.18);
+  }
+  .brand h1{font-family:"Manrope";font-size:1.02rem;font-weight:800;margin:0;letter-spacing:.2px;line-height:1.15}
+  .brand .sub{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+  .countdown{
+    flex:none;display:flex;align-items:center;gap:10px;
+    padding:8px 14px;border-radius:999px;
+    background:linear-gradient(180deg, rgba(55,214,160,.16), rgba(55,214,160,.06));
+    border:1px solid rgba(55,214,160,.35);
+    box-shadow:0 0 22px -8px rgba(55,214,160,.6);
+  }
+  .countdown.during{background:linear-gradient(180deg, rgba(232,146,61,.18), rgba(232,146,61,.06));border-color:rgba(232,146,61,.45);box-shadow:0 0 22px -8px rgba(232,146,61,.6)}
+  .countdown.after{background:linear-gradient(180deg, rgba(122,134,168,.16), rgba(122,134,168,.06));border-color:rgba(122,134,168,.4);box-shadow:none}
+  .countdown .dot{width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 10px 1px var(--good);animation:pulse 2.4s ease-in-out infinite}
+  .countdown.during .dot{background:var(--accent);box-shadow:0 0 10px 1px var(--accent)}
+  .countdown.after .dot{background:var(--muted);box-shadow:none;animation:none}
+  .countdown .cd-num{font-family:"Manrope";font-weight:800;font-size:1.05rem;line-height:1}
+  .countdown .cd-lbl{font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
+
+  /* ---------- DAY SWITCHER ---------- */
+  .tabsbar{
+    position:sticky;top:67px;z-index:40;
+    background:linear-gradient(180deg, rgba(11,16,32,.88), rgba(11,16,32,.5));
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--stroke);
+  }
+  .tabs{
+    max-width:1080px;margin:0 auto;padding:10px 12px;
+    display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:none;cursor:pointer;border:1px solid var(--stroke);
+    background:rgba(255,255,255,.04);
+    color:var(--muted);border-radius:14px;padding:8px 14px;
+    font-family:"Manrope";font-weight:700;font-size:.82rem;letter-spacing:.2px;
+    display:flex;flex-direction:column;align-items:center;gap:2px;min-width:78px;
+    transition:transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s;
+  }
+  .tab .t-day{font-size:.66rem;text-transform:uppercase;letter-spacing:.6px;opacity:.85}
+  .tab .t-park{font-size:.84rem}
+  .tab:hover{color:var(--text);background:rgba(255,255,255,.08);transform:translateY(-1px)}
+  .tab[aria-selected="true"]{
+    color:#fff;border-color:transparent;
+    background:linear-gradient(160deg, var(--tab-accent,#E8923D), color-mix(in srgb, var(--tab-accent,#E8923D) 55%, #6D4AD6));
+    box-shadow:0 10px 24px -10px var(--tab-accent,#E8923D), inset 0 0 0 1px rgba(255,255,255,.22);
+  }
+  .tab[aria-selected="true"] .t-day{opacity:.9}
+  .tab:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+  /* ---------- DAY PANEL ---------- */
+  .panel{padding-top:20px;animation:fade .35s ease}
+  .panel[hidden]{display:none}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .parkcard{
+    position:relative;overflow:hidden;border-radius:var(--radius);
+    border:1px solid var(--stroke-strong);
+    background:
+      linear-gradient(150deg, color-mix(in srgb, var(--accent) 42%, transparent), transparent 62%),
+      var(--panel);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    box-shadow:var(--glow);
+    padding:20px 20px 18px;margin-bottom:18px;
+  }
+  .parkcard::before{
+    content:"";position:absolute;right:-60px;top:-70px;width:230px;height:230px;border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent), transparent 70%);
+    filter:blur(8px);pointer-events:none;
+  }
+  .pc-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;position:relative;flex-wrap:wrap}
+  .pc-date{font-size:.74rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;opacity:.9}
+  .pc-title{font-family:"Manrope";font-size:1.55rem;font-weight:800;margin:4px 0 2px;line-height:1.1}
+  .pc-park{font-size:.95rem;color:rgba(255,255,255,.85);font-weight:600}
+  .badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;position:relative}
+  .badge{
+    font-size:.72rem;font-weight:700;letter-spacing:.3px;
+    padding:5px 11px;border-radius:999px;
+    background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.22);color:#fff;
+    backdrop-filter:blur(4px);
+  }
+  .glance{
+    margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:relative;
+  }
+  .glance-item{
+    background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.14);border-radius:var(--radius-sm);
+    padding:9px 11px;backdrop-filter:blur(4px);
+  }
+  .glance-item .g-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.7);font-weight:700}
+  .glance-item .g-val{font-size:.84rem;font-weight:600;color:#fff;margin-top:2px}
+
+  /* ---------- FILTER CHIPS ---------- */
+  .filters{
+    position:sticky;top:118px;z-index:30;
+    margin:0 0 16px;padding:12px;border-radius:var(--radius-sm);
+    background:var(--panel);border:1px solid var(--stroke);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    box-shadow:var(--glow);
+  }
+  .filters .f-title{font-size:.66rem;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    cursor:pointer;border:1px solid var(--stroke-strong);
+    background:rgba(255,255,255,.04);color:var(--muted);
+    border-radius:999px;padding:7px 13px;font-weight:700;font-size:.8rem;
+    display:inline-flex;align-items:center;gap:7px;
+    transition:all .18s ease;
+  }
+  .chip:hover{color:var(--text);background:rgba(255,255,255,.09)}
+  .chip:focus-visible{outline:3px solid #8aa0ff;outline-offset:2px}
+  .chip .c-ic{font-size:.95rem}
+  .chip[aria-pressed="true"]{color:#06121f;border-color:transparent;box-shadow:0 6px 18px -8px rgba(0,0,0,.6)}
+  .chip[data-filter="family"][aria-pressed="true"]{background:linear-gradient(180deg,#9fd0ff,#5aa6f0);color:#06121f}
+  .chip[data-filter="coaster"][aria-pressed="true"]{background:linear-gradient(180deg,#ff9a76,#f0653e);color:#1a0a04}
+  .chip[data-filter="meals"][aria-pressed="true"]{background:linear-gradient(180deg,#ffe08a,#ffcf5c);color:#241c00}
+  .chip[data-filter="oz"][aria-pressed="true"]{background:linear-gradient(180deg,#7fe9c6,#37d6a0);color:#03261b}
+  .filters .f-hint{font-size:.7rem;color:var(--muted2);margin-top:9px}
+
+  /* ---------- LEGEND ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--stroke)}
+  .legend .lg{display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--muted);font-weight:600}
+  .swatch{width:13px;height:13px;border-radius:4px;flex:none}
+  .sw-family{background:linear-gradient(180deg,#9fd0ff,#5aa6f0)}
+  .sw-coaster{background:linear-gradient(180deg,#ff9a76,#f0653e)}
+  .sw-both{background:linear-gradient(120deg,#9fd0ff 50%,#ff9a76 50%)}
+  .sw-oz{background:linear-gradient(180deg,#7fe9c6,#37d6a0)}
+
+  /* ---------- ALERT CALLOUT ---------- */
+  .alert{
+    position:relative;border-radius:var(--radius-sm);padding:14px 16px 14px 48px;margin-bottom:16px;
+    background:linear-gradient(180deg, rgba(255,207,92,.14), rgba(255,207,92,.05));
+    border:1px solid rgba(255,207,92,.4);
+    box-shadow:0 0 24px -12px rgba(255,207,92,.5);
+  }
+  .alert::before{content:"⚠️";position:absolute;left:15px;top:13px;font-size:1.2rem}
+  .alert .a-lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.8px;font-weight:800;color:var(--warn);margin-bottom:2px}
+  .alert .a-txt{font-size:.9rem;color:#fff6df}
+
+  /* ---------- SCHEDULE LIST ---------- */
+  .sched{display:flex;flex-direction:column;gap:11px;list-style:none;margin:0;padding:0}
+  .slot{
+    position:relative;display:grid;grid-template-columns:84px 1fr;gap:14px;
+    border-radius:var(--radius-sm);
+    background:var(--panel);border:1px solid var(--stroke);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    padding:13px 15px;
+    transition:transform .2s ease, opacity .25s ease, box-shadow .2s ease, border-color .2s, filter .25s;
+  }
+  .slot:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(0,0,0,.8);border-color:var(--stroke-strong)}
+  .slot .s-time{font-family:"Manrope";font-weight:800;font-size:.82rem;color:var(--accent);letter-spacing:.2px;padding-top:1px}
+  .slot .s-body{min-width:0}
+  .slot .s-text{font-size:.92rem;color:var(--text);font-weight:500}
+  .slot .s-text b{font-weight:800;color:#fff}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .tag{font-size:.66rem;font-weight:700;letter-spacing:.3px;padding:3px 9px;border-radius:999px;border:1px solid transparent;display:inline-flex;align-items:center;gap:5px}
+  .tag.t-family{background:rgba(90,166,240,.16);color:#aed4ff;border-color:rgba(90,166,240,.4)}
+  .tag.t-coaster{background:rgba(240,101,62,.16);color:#ffb39a;border-color:rgba(240,101,62,.4)}
+  .tag.t-oz{background:rgba(55,214,160,.16);color:#8fe9c8;border-color:rgba(55,214,160,.4)}
+
+  /* meal & key styling */
+  .slot.meal{
+    background:linear-gradient(180deg, rgba(255,207,92,.10), var(--panel));
+    border-color:rgba(255,207,92,.3);
+  }
+  .slot.meal .s-time{color:var(--warn)}
+  .slot.meal::after{content:"🍽️";position:absolute;right:13px;top:11px;font-size:1rem;opacity:.85}
+  .slot.key{
+    background:linear-gradient(180deg, rgba(109,74,214,.16), var(--panel));
+    border-color:rgba(140,110,235,.4);
+    box-shadow:inset 3px 0 0 0 #8c6eeb;
+  }
+  .slot.key .s-time{color:#b9a6ff}
+  .slot.key::after{content:"★";position:absolute;right:14px;top:10px;font-size:1rem;color:#b9a6ff}
+
+  /* filter dimming */
+  .slot.dim{opacity:.26;filter:grayscale(.5)}
+  .slot.oz-yes{box-shadow:inset 3px 0 0 0 #37d6a0, 0 0 22px -14px #37d6a0}
+  .slot.oz-no{opacity:.42}
+  .slot.oz-no .s-text{text-decoration:line-through;text-decoration-color:rgba(255,122,122,.6)}
+  .oz-flag{font-size:.66rem;font-weight:800;letter-spacing:.3px;padding:3px 9px;border-radius:999px;margin-top:9px;display:none;align-items:center;gap:5px;width:fit-content}
+  .slot.oz-yes .oz-flag.yes{display:inline-flex;background:rgba(55,214,160,.18);color:#8fe9c8;border:1px solid rgba(55,214,160,.45)}
+  .slot.oz-no .oz-flag.no{display:inline-flex;background:rgba(255,122,122,.16);color:#ffb3b3;border:1px solid rgba(255,122,122,.4)}
+
+  .empty-note{display:none;text-align:center;color:var(--muted);font-size:.9rem;padding:24px;border:1px dashed var(--stroke);border-radius:var(--radius-sm);background:rgba(255,255,255,.02)}
+
+  /* ---------- INFO STRIP / FOOTER ---------- */
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:26px}
+  .info-card{
+    background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius-sm);
+    padding:15px 16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:var(--glow);
+  }
+  .info-card h3{font-family:"Manrope";font-size:.95rem;margin:0 0 9px;display:flex;align-items:center;gap:8px}
+  .info-card ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+  .info-card li{font-size:.82rem;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+  .info-card li b{color:var(--text);font-weight:700}
+  .info-card li::before{content:"›";color:var(--accent-2);font-weight:800;flex:none}
+  .credit-flag{color:var(--warn);font-weight:700}
+
+  footer{margin-top:30px;text-align:center;color:var(--muted2);font-size:.74rem;line-height:1.7}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:560px){
+    .glance{grid-template-columns:1fr}
+    .slot{grid-template-columns:64px 1fr;gap:11px;padding:12px 13px}
+    .pc-title{font-size:1.3rem}
+    .brand h1{font-size:.92rem}
+    .filters{top:112px}
+    .tabsbar{top:64px}
+    .countdown{padding:7px 11px}
+  }
+  @media (min-width:720px){
+    .brand h1{font-size:1.12rem}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  }
+  :focus-visible{outline:3px solid #8aa0ff;outline-offset:2px;border-radius:8px}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="appbar-inner">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🎢</div>
+      <div>
+        <h1>Universal Orlando 2026</h1>
+        <div class="sub">Family Trip · Jun 15–20 · Cabana Bay</div>
+      </div>
+    </div>
+    <div class="countdown" id="countdown" role="status" aria-live="polite">
+      <span class="dot" aria-hidden="true"></span>
+      <div>
+        <div class="cd-num" id="cdNum">—</div>
+        <div class="cd-lbl" id="cdLbl">loading</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabsbar" aria-label="Day switcher">
+  <div class="tabs" id="tabs" role="tablist" aria-label="Trip days"></div>
+</nav>
+
+<main class="wrap">
+  <div id="panels"></div>
+
+  <section class="info-grid" aria-label="Trip reference">
+    <div class="info-card">
+      <h3>🏨 Lodging &amp; Crew</h3>
+      <ul>
+        <li><b>Cabana Bay Beach Resort</b> — 2 rooms, booked Jun 14–20.</li>
+        <li><b>Party of 7:</b> Zach &amp; Becca (parents), Grandma (62), Jace (14), Avia (12), Oz (4, 43"), Elowen (1).</li>
+        <li><b>Family Crew</b> = Grandma + a parent + Oz + Elowen (plus Jace &amp; Avia when not coastering).</li>
+        <li><b>Coaster Crew</b> = a parent + Avia when she wants in. Jace skips coasters.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>🎟️ Tickets &amp; Express</h3>
+      <ul>
+        <li>All 6 over age 3 hold a <b>5-Day Park-to-Park</b> ticket (incl. Volcano Bay).</li>
+        <li><b>2-day Express</b> on Thu + Fri covers everyone <b>except Grandma</b>.</li>
+        <li>Express <b>never</b> works at Volcano Bay; at <b>Epic it is single-use per ride</b>.</li>
+        <li>Elowen (1) has <b>no ticket</b> — carousels, Hogwarts Express, lazy river only.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>🪄 Add-ons</h3>
+      <ul>
+        <li><b>2 interactive wands</b> (shared) — bought Monday at Ollivanders/Hogsmeade, work all week.</li>
+        <li><b>3 Power-Up Bands</b> (Jace / Avia / Oz) — activated Thursday at Super Nintendo World.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>🍽️ Dining Tactic</h3>
+      <ul>
+        <li><span class="credit-flag">$300 + $300 = $600 dining credit</span>, HOTEL-ONLY, must be used by <b>Friday night</b>.</li>
+        <li>Hotel breakfasts/dinners on the credit; park lunches out of pocket via mobile order ~20 min ahead.</li>
+        <li>Exceptions: <b>Toadstool Cafe</b> (Epic) = virtual waitlist at open; <b>Minion Cafe</b> (USF) = table delivery.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>✈️ Arrivals &amp; Departure</h3>
+      <ul>
+        <li><b>Sun Jun 14 AM</b> — Grandma + Becca + Elowen fly in, check in both rooms.</li>
+        <li><b>Mon Jun 15, 4:30 AM</b> — Zach + Jace + Avia + Oz land MCO (red-eye). SuperStar Shuttle, <b>no rental car</b>.</li>
+        <li><b>Sat Jun 20</b> — 9 AM flight, ~6 AM hotel departure, no park.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>📏 Oz's Height Rules (43")</h3>
+      <ul>
+        <li><b>Clears:</b> Mario Kart, Mine-Cart Madness, Gringotts (~42"), Krakatau (42"), River Adventure (42"), Flight of the Hippogriff (36"), Kong (36"), most family rides.</li>
+        <li><b>Misses:</b> Hagrid's, VelociCoaster, Hulk, Rip Ride Rockit, Stardust Racers, Monsters Unchained.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Built as a living plan — edit the <code>TRIP</code> array in the source to update any day or slot.<br>
+    Universal Orlando · June 15–20, 2026 · Party of 7
+  </footer>
+</main>
+
+<script>
+/* ============================================================
+   CANONICAL TRIP DATA — edit here to update the plan.
+   slot fields: t = time, x = text (HTML-safe inline <b> ok),
+   m = style ("meal" | "key" | null),
+   crew = ["family","coaster"] (which crews this slot involves; omit = both/all),
+   oz = "yes" | "no" | null  (Oz 43" can ride / misses / not a ride)
+   ============================================================ */
+const TRIP = [
+  {
+    id:"mon", dayLabel:"Mon", short:"IOA", date:"Monday · Jun 15",
+    title:"Islands of Adventure", park:"IOA — walk-up day",
+    accent:"#E8923D",
+    badges:["No Express","Red-eye day","Gentle"],
+    glance:[
+      {l:"First ride", v:"Cat in the Hat 🐱"},
+      {l:"Lunch", v:"Three Broomsticks 🍗"},
+      {l:"Dinner", v:"Galaxy Bowl / Bayliner 🍽️"}
+    ],
+    alert:"Alt lunch (all mobile order): Thunder Falls Terrace (ribs/chicken) or Circus McGurkus (kid-friendly).",
+    slots:[
+      {t:"4:30am", x:"<b>Land MCO:</b> Zach, Jace, Avia, Oz", m:"key"},
+      {t:"4:30–5:30", x:"Deplane, bags, SuperStar Shuttle"},
+      {t:"~6:15", x:"<b>Arrive Cabana Bay</b>, suite is ready. Sleep.", m:"key"},
+      {t:"6:15–11:00", x:"Red-eye crew crashes; Grandma, Becca &amp; Elowen do a slow pool morning", crew:["family"]},
+      {t:"11:00", x:"<b>Breakfast at Bayliner Diner</b> (credit) — walk-up food court, no mobile order needed", m:"meal"},
+      {t:"12:00", x:"Walk to IOA, closest park, ~10–15 min"},
+      {t:"12:15", x:"<b>Seuss Landing:</b> Cat in the Hat, One Fish Two Fish, Caro-Seuss-el (Elowen), trolley", crew:["family"], oz:"yes"},
+      {t:"1:00", x:"<b>Hogsmeade:</b> buy the 2 wands at Ollivanders (work all week), cast spells, Flight of the Hippogriff (Oz 36\"), Butterbeer. Coaster crew can take VelociCoaster / Hulk / Hagrid's; Jace explores instead", oz:"yes"},
+      {t:"2:15", x:"<b>Late lunch — Three Broomsticks.</b> Order ~2:15 for a 2:30–2:45 window, grab a table, tap \"Prepare My Order\" walking in", m:"meal"},
+      {t:"3:15", x:"<b>Jurassic / Skull Island</b> if energy holds — River Adventure (Oz 42\"), Kong (36\")", oz:"yes"},
+      {t:"4:00", x:"Littles fading, walk back", crew:["family"]},
+      {t:"4:15", x:"Nap / pool at Cabana Bay", crew:["family"]},
+      {t:"6:30", x:"<b>Dinner — Galaxy Bowl or Bayliner</b> (credit)", m:"meal"},
+      {t:"7:30+", x:"Early night"}
+    ]
+  },
+  {
+    id:"tue", dayLabel:"Tue", short:"Volcano Bay", date:"Tuesday · Jun 16",
+    title:"Volcano Bay", park:"Water park day",
+    accent:"#17A8A4",
+    badges:["Water park","Rested"],
+    glance:[
+      {l:"First ride", v:"Krakatau (virtual line) 🌋"},
+      {l:"Lunch", v:"At your chairs 🏖️"},
+      {l:"Dinner", v:"Cabana Bay (credit) 🍽️"}
+    ],
+    alert:null,
+    slots:[
+      {t:"7:30", x:"<b>Breakfast at Bayliner</b> (credit); suit up — swim diapers, water shoes, dry bag", m:"meal"},
+      {t:"9:00", x:"<b>Volcano Bay opens</b> — chairs near Tot Tiki Reef; grab a TapuTapu band, reserve Krakatau in the virtual line"},
+      {t:"9:15", x:"Big kids: slides they like (Jace too — water slides are not coasters). Avia + Oz: Krakatau aqua coaster (Oz 42\"), Honu raft. Grandma + Elowen: Tot Tiki + zero-entry", oz:"yes"},
+      {t:"11:40", x:"<b>Mobile order — Whakawaiwai Eats</b> (kid-friendly) or Kohola Reef. Order from your chairs for a 12:00–12:15 window", m:"meal"},
+      {t:"12:00", x:"<b>Lunch at your chairs</b> — you already have the seats (water-park advantage)", m:"meal"},
+      {t:"1:00", x:"Littles + Grandma walk back for naps; big kids + a parent stay for slides + Kopiko Wai lazy river"},
+      {t:"1:00–3:30", x:"Naps / pool for littles; slides for the big kids"},
+      {t:"3:30", x:"Reconvene — Cabana Bay pool or an easy float"},
+      {t:"5:00", x:"Shower, rest"},
+      {t:"6:30", x:"<b>Dinner at Cabana Bay</b> (credit)", m:"meal"},
+      {t:"Evening", x:"Easy night, pool / early bed"}
+    ]
+  },
+  {
+    id:"wed", dayLabel:"Wed", short:"USF", date:"Wednesday · Jun 17",
+    title:"Universal Studios Florida", park:"USF — walk-up day",
+    accent:"#3B6FE0",
+    badges:["No Express","Leaky Cauldron breakfast","Mini golf"],
+    glance:[
+      {l:"First ride", v:"Gringotts (rope drop) 🏦"},
+      {l:"Lunch", v:"Minion Cafe 🍔"},
+      {l:"Dinner", v:"Cabana Bay (credit) 🍽️"}
+    ],
+    alert:null,
+    slots:[
+      {t:"7:00", x:"Coffee / snack at the resort (the 9:30 breakfast is the meal); get ready"},
+      {t:"8:00", x:"<b>EPA — walk to USF.</b> If USF is the EPA park, rope-drop Gringotts (Oz 42\"!) before breakfast", oz:"yes"},
+      {t:"9:30", x:"<b>Leaky Cauldron breakfast</b> (Diagon Alley) — reserved, whole group, ~1 hr", m:"meal"},
+      {t:"10:30", x:"<b>Diagon Alley:</b> wand-casting, Butterbeer, immersion. Coaster crew: Rip Ride Rockit (single-rider); Gringotts is mild enough for the whole crew"},
+      {t:"12:30", x:"<b>Hogwarts Express</b> to Hogsmeade and back — all ages, a ride in itself", oz:"yes"},
+      {t:"1:00", x:"<b>Light lunch — Minion Cafe.</b> Use Table Delivery — order in the app, enter your table number, food comes to you. Alt: Krusty Burger", m:"meal"},
+      {t:"1:45", x:"Littles + Grandma back to Cabana Bay for naps (walkable)", crew:["family"]},
+      {t:"1:45", x:"Big kids + parents: Revenge of the Mummy, Rockit re-ride, <b>MEN IN BLACK</b>"},
+      {t:"3:30", x:"Whole group back — Minion Mayhem, Transformers, Fast &amp; Furious, Simpsons (Oz clears all), more Diagon Alley as it cools", oz:"yes"},
+      {t:"6:30", x:"<b>Dinner at Cabana Bay</b> (credit)", m:"meal"},
+      {t:"8:00", x:"<b>Mini golf — Invaders from Planet Putt</b> (CityWalk). Neon at night, Elowen in stroller", oz:"yes"},
+      {t:"~9:45", x:"Back, bed"}
+    ]
+  },
+  {
+    id:"thu", dayLabel:"Thu", short:"Epic", date:"Thursday · Jun 18",
+    title:"Epic Universe", park:"Express day",
+    accent:"#6D4AD6",
+    badges:["Express","Full Epic day"],
+    glance:[
+      {l:"First ride", v:"Mario Kart / Dark Universe 🍄"},
+      {l:"Lunch", v:"Toadstool Cafe (waitlist) 🍔"},
+      {l:"Dinner", v:"The Atlantic / Blue Dragon 🍽️"}
+    ],
+    alert:"At Epic, Express is single-use per ride — spend each skip on the longest-wait headliners (Mario Kart, Stardust Racers, Monsters Unchained).",
+    slots:[
+      {t:"7:00", x:"<b>Breakfast at Bayliner</b> (credit); to the bus early", m:"meal"},
+      {t:"8:00", x:"Resort bus to Epic (~30–45 min)"},
+      {t:"8:30", x:"Enter — join the <b>Toadstool Cafe virtual waitlist</b> (target ~12:00). Rope-drop Super Nintendo World (Mario Kart w/ Oz) or Dark Universe; <b>activate the 3 Power-Up Bands</b> at SNW", m:"key", oz:"yes"},
+      {t:"9:00", x:"Express touring. Coaster crew: Stardust Racers, Monsters Unchained (Avia optional; Jace not). Family Crew (incl. Jace): Mario Kart + Mine-Cart Madness (Oz rides both), Yoshi, Isle of Berk, band key challenges — Bowser Jr.", oz:"yes"},
+      {t:"~12:00", x:"<b>Lunch — Toadstool Cafe</b> when your slot pings (Mario Burger, Peach cake). Backup: mobile order Pizza Moon or Burning Blade", m:"meal"},
+      {t:"1:00", x:"Elowen stroller nap; Ministry of Magic wands + Butterbeer; Dark Universe for the big kids"},
+      {t:"3:00", x:"Heat break — Celestial Park, cool drinks"},
+      {t:"3:45", x:"Re-ride favorites (Express / single-rider)"},
+      {t:"5:30", x:"Option: littles + Grandma bus back; others stay", crew:["family"]},
+      {t:"6:00", x:"<b>Dinner — The Atlantic / Blue Dragon</b> if booked, else mobile order + grab a table", m:"meal"},
+      {t:"7:30", x:"<b>Celestial Park fireworks</b>"},
+      {t:"~9:00", x:"Bus back"}
+    ]
+  },
+  {
+    id:"fri", dayLabel:"Fri", short:"Flex", date:"Friday · Jun 19",
+    title:"Flex Day", park:"Park TBD · Express day",
+    accent:"#F0653E",
+    badges:["Express","Park TBD"],
+    glance:[
+      {l:"First ride", v:"EPA at chosen park 🎢"},
+      {l:"Lunch", v:"Park-dependent mobile order 🍔"},
+      {l:"Dinner", v:"Cabana Bay — CREDIT DEADLINE 🍽️"}
+    ],
+    alert:"Pick Epic, IOA, or USF to use the Express (it never works at Volcano Bay). Confirm the park mid-week and the ride blocks get filled in.",
+    slots:[
+      {t:"7:00", x:"<b>Breakfast at Bayliner</b> (credit)", m:"meal"},
+      {t:"8:00", x:"EPA at your chosen park"},
+      {t:"8:30", x:"<b>Express touring</b> — ride block fills in once you pick the park"},
+      {t:"~11:45", x:"Mobile order ~20 min ahead: Epic → Pizza Moon / Burning Blade; IOA → Three Broomsticks / Thunder Falls; USF → Minion Cafe / Krusty Burger", m:"meal"},
+      {t:"12:15", x:"<b>Lunch</b>", m:"meal"},
+      {t:"1:00", x:"Midday reset — nap split if it is a walkable park, in-stroller if Epic"},
+      {t:"3:00", x:"Re-ride favorites / catch anything missed"},
+      {t:"5:00", x:"Last rides, head back — be back for dinner"},
+      {t:"6:30", x:"<b>Last dinner = dining-credit deadline.</b> Spend both rooms' balance at Cabana Bay; settle folios / express checkout", m:"meal"},
+      {t:"Evening", x:"Pack — 6am departure. Lay out travel clothes; pre-order or pack breakfast"}
+    ]
+  },
+  {
+    id:"sat", dayLabel:"Sat", short:"Travel", date:"Saturday · Jun 20",
+    title:"Travel Day", park:"No park · 9 AM flight",
+    accent:"#6B7280",
+    badges:["No park","9AM flight"],
+    glance:[
+      {l:"Wake", v:"4:30 — final pack ⏰"},
+      {l:"Shuttle", v:"~5:45 SuperStar → MCO 🚐"},
+      {l:"Flight", v:"9:00 AM departs ✈️"}
+    ],
+    alert:"Dining credit is spent Friday night — Saturday breakfast is out of pocket or packed.",
+    slots:[
+      {t:"4:30", x:"Wake, final pack, diaper bag + snacks"},
+      {t:"~5:45", x:"<b>SuperStar Shuttle pickup</b> (confirm the time in advance) — MCO", m:"key"},
+      {t:"~6:30", x:"Arrive MCO — check bags, security"},
+      {t:"7:30", x:"Gate, breakfast / snacks"},
+      {t:"9:00am", x:"<b>Flight departs</b>", m:"key"}
+    ]
+  }
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const tabsEl = document.getElementById('tabs');
+const panelsEl = document.getElementById('panels');
+
+function crewTags(crew){
+  // returns the crews a slot involves (omit = whole group/all)
+  if(!crew) return ['family','coaster'];
+  return crew;
+}
+
+function buildSlot(s){
+  const crews = crewTags(s.crew);
+  const dataCrew = crews.join(' ');
+  const meal = s.m === 'meal';
+  const isMeal = meal ? '1' : '0';
+  const cls = ['slot'];
+  if(s.m === 'meal') cls.push('meal');
+  if(s.m === 'key') cls.push('key');
+
+  let tagsHtml = '';
+  const tagDefs = [];
+  if(crews.includes('family') && crews.includes('coaster')){
+    tagDefs.push(['t-family','👨‍👩‍👧 Whole group']);
+  } else {
+    if(crews.includes('family')) tagDefs.push(['t-family','👨‍👩‍👧 Family Crew']);
+    if(crews.includes('coaster')) tagDefs.push(['t-coaster','🎢 Coaster Crew']);
+  }
+  tagDefs.forEach(td => { tagsHtml += `<span class="tag ${td[0]}">${td[1]}</span>`; });
+
+  const ozYes = s.oz === 'yes' ? '<span class="oz-flag yes">🟢 Oz can ride (43")</span>' : '';
+  const ozNo  = s.oz === 'no'  ? '<span class="oz-flag no">🔴 Oz misses this one</span>' : '';
+
+  return `<li class="${cls.join(' ')}" data-crew="${dataCrew}" data-meal="${isMeal}" data-oz="${s.oz||''}">
+      <div class="s-time">${s.t}</div>
+      <div class="s-body">
+        <div class="s-text">${s.x}</div>
+        <div class="tags">${tagsHtml}</div>
+        ${ozYes}${ozNo}
+      </div>
+    </li>`;
+}
+
+function buildPanel(day, idx){
+  const badges = day.badges.map(b=>`<span class="badge">${b}</span>`).join('');
+  const glance = day.glance.map(g=>`
+    <div class="glance-item">
+      <div class="g-lbl">${g.l}</div>
+      <div class="g-val">${g.v}</div>
+    </div>`).join('');
+  const alert = day.alert ? `
+    <div class="alert" role="note">
+      <div class="a-lbl">Alert</div>
+      <div class="a-txt">${day.alert}</div>
+    </div>` : '';
+
+  const filters = `
+    <div class="filters" role="group" aria-label="Filter today's schedule">
+      <div class="f-title">🎚️ Live filters</div>
+      <div class="chips">
+        <button class="chip" type="button" data-filter="family" aria-pressed="false"><span class="c-ic" aria-hidden="true">👨‍👩‍👧</span> Family Crew</button>
+        <button class="chip" type="button" data-filter="coaster" aria-pressed="false"><span class="c-ic" aria-hidden="true">🎢</span> Coaster Crew</button>
+        <button class="chip" type="button" data-filter="meals" aria-pressed="false"><span class="c-ic" aria-hidden="true">🍽️</span> Meals only</button>
+        <button class="chip" type="button" data-filter="oz" aria-pressed="false"><span class="c-ic" aria-hidden="true">📏</span> Oz can ride (43")</button>
+      </div>
+      <div class="f-hint">Filters update this day instantly — no reload. The Oz toggle flags rides he clears and dims the ones he misses.</div>
+      <div class="legend" aria-hidden="true">
+        <span class="lg"><span class="swatch sw-family"></span> Family Crew</span>
+        <span class="lg"><span class="swatch sw-coaster"></span> Coaster Crew</span>
+        <span class="lg"><span class="swatch sw-both"></span> Whole group</span>
+        <span class="lg"><span class="swatch sw-oz"></span> Oz clears (43")</span>
+      </div>
+    </div>`;
+
+  const slots = day.slots.map(buildSlot).join('');
+
+  const panel = document.createElement('section');
+  panel.className = 'panel';
+  panel.id = 'panel-' + day.id;
+  panel.setAttribute('role','tabpanel');
+  panel.setAttribute('aria-labelledby','tab-' + day.id);
+  panel.setAttribute('tabindex','0');
+  if(idx !== 0) panel.hidden = true;
+  panel.style.setProperty('--accent', day.accent);
+
+  panel.innerHTML = `
+    <article class="parkcard">
+      <div class="pc-top">
+        <div>
+          <div class="pc-date">${day.date}</div>
+          <h2 class="pc-title">${day.title}</h2>
+          <div class="pc-park">${day.park}</div>
+        </div>
+      </div>
+      <div class="badges">${badges}</div>
+      <div class="glance" aria-label="At a glance">${glance}</div>
+    </article>
+    ${filters}
+    ${alert}
+    <ol class="sched" aria-label="${day.title} schedule">${slots}</ol>
+    <p class="empty-note" role="status">No slots match these filters for this day.</p>`;
+  return panel;
+}
+
+function buildTab(day, idx){
+  const btn = document.createElement('button');
+  btn.className = 'tab';
+  btn.id = 'tab-' + day.id;
+  btn.type = 'button';
+  btn.setAttribute('role','tab');
+  btn.setAttribute('aria-controls','panel-' + day.id);
+  btn.setAttribute('aria-selected', idx===0 ? 'true' : 'false');
+  btn.tabIndex = idx===0 ? 0 : -1;
+  btn.style.setProperty('--tab-accent', day.accent);
+  btn.innerHTML = `<span class="t-day">${day.dayLabel}</span><span class="t-park">${day.short}</span>`;
+  return btn;
+}
+
+TRIP.forEach((day,i)=>{
+  tabsEl.appendChild(buildTab(day,i));
+  panelsEl.appendChild(buildPanel(day,i));
+});
+
+/* ---- tab switching + keyboard ---- */
+const tabBtns = Array.from(tabsEl.querySelectorAll('.tab'));
+function selectTab(idx, focus){
+  tabBtns.forEach((b,i)=>{
+    const on = i===idx;
+    b.setAttribute('aria-selected', on?'true':'false');
+    b.tabIndex = on?0:-1;
+    const p = document.getElementById(b.getAttribute('aria-controls'));
+    p.hidden = !on;
+  });
+  if(focus) tabBtns[idx].focus();
+  tabBtns[idx].scrollIntoView({block:'nearest', inline:'center'});
+}
+tabBtns.forEach((b,i)=>{
+  b.addEventListener('click', ()=>selectTab(i,false));
+  b.addEventListener('keydown', e=>{
+    let n = null;
+    if(e.key==='ArrowRight'||e.key==='ArrowDown') n = (i+1)%tabBtns.length;
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n = (i-1+tabBtns.length)%tabBtns.length;
+    else if(e.key==='Home') n = 0;
+    else if(e.key==='End') n = tabBtns.length-1;
+    if(n!==null){ e.preventDefault(); selectTab(n,true); }
+  });
+});
+
+/* ---- per-panel live filters (each panel keeps independent state) ---- */
+function wirePanel(panel){
+  const chips = Array.from(panel.querySelectorAll('.chip'));
+  const slots = Array.from(panel.querySelectorAll('.slot'));
+  const emptyNote = panel.querySelector('.empty-note');
+  const state = { family:false, coaster:false, meals:false, oz:false };
+
+  function apply(){
+    let visible = 0;
+    slots.forEach(slot=>{
+      const crew = (slot.dataset.crew||'').split(' ').filter(Boolean);
+      const isMeal = slot.dataset.meal === '1';
+      const ozVal = slot.dataset.oz;
+      let show = true;
+
+      // crew filters (OR within crew group when any active)
+      if(state.family || state.coaster){
+        const matchFam = state.family && crew.includes('family');
+        const matchCoa = state.coaster && crew.includes('coaster');
+        if(!(matchFam || matchCoa)) show = false;
+      }
+      // meals only
+      if(state.meals && !isMeal) show = false;
+
+      slot.classList.toggle('dim', !show);
+      slot.classList.remove('oz-yes','oz-no');
+      if(show){
+        visible++;
+        if(state.oz){
+          if(ozVal==='yes') slot.classList.add('oz-yes');
+          else if(ozVal==='no') slot.classList.add('oz-no');
+        }
+      }
+    });
+    emptyNote.style.display = visible===0 ? 'block' : 'none';
+  }
+
+  chips.forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const f = chip.dataset.filter;
+      state[f] = !state[f];
+      chip.setAttribute('aria-pressed', state[f]?'true':'false');
+      apply();
+    });
+  });
+}
+Array.from(panelsEl.querySelectorAll('.panel')).forEach(wirePanel);
+
+/* ============================================================
+   LIVE COUNTDOWN — before / during / after, client-side
+   ============================================================ */
+(function(){
+  const cdNum = document.getElementById('cdNum');
+  const cdLbl = document.getElementById('cdLbl');
+  const cdBox = document.getElementById('countdown');
+
+  // Trip days at local midnight: Jun 15–20, 2026 (index 0..5)
+  const tripStart = new Date(2026,5,15,0,0,0);   // Jun 15 2026
+  const tripEnd   = new Date(2026,5,20,23,59,59); // Jun 20 2026
+
+  function midnight(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+  function dayDiff(a,b){ return Math.round((midnight(a)-midnight(b))/86400000); }
+
+  function update(){
+    const now = new Date();
+    cdBox.classList.remove('during','after');
+
+    if(now < tripStart){
+      const days = dayDiff(tripStart, now);
+      cdNum.textContent = days;
+      cdLbl.textContent = days===1 ? 'day to go' : 'days to go';
+      autoSelectByDate(now);
+    } else if(now <= tripEnd){
+      const dn = dayDiff(now, tripStart) + 1; // 1..6
+      cdBox.classList.add('during');
+      cdNum.textContent = 'Day ' + dn;
+      cdLbl.textContent = 'of 6 · live';
+      autoSelectByDate(now);
+    } else {
+      cdBox.classList.add('after');
+      cdNum.textContent = '🎉';
+      cdNum.setAttribute('role','img');
+      cdNum.setAttribute('aria-label','Celebration');
+      cdLbl.textContent = 'Trip recap';
+    }
+  }
+
+  // when before/during the trip, default the open tab to the relevant day
+  let didAuto = false;
+  function autoSelectByDate(now){
+    if(didAuto) return;
+    didAuto = true;
+    let idx = 0;
+    if(now >= tripStart && now <= tripEnd){
+      idx = Math.min(5, Math.max(0, dayDiff(now, tripStart)));
+    }
+    if(idx!==0) selectTab(idx,false);
+  }
+
+  update();
+  // refresh hourly so the "Day X" rolls over if left open
+  setInterval(update, 3600*1000);
+})();
+</script>
+</body>
+</html>
