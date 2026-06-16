@@ -687,33 +687,34 @@ const TRIP = {
       park:"Volcano Bay", parkShort:"Volcano Bay",
       accent:"#17A8A4",
       meta:"Volcano Bay · A water-park day",
-      badges:["Water park","Rested"],
-      lede:"A rested morning at the water park: chairs staked near Tot Tiki Reef, a TapuTapu band reserving Krakatau, and the rare luxury of eating lunch at seats you already hold while the littles peel off for naps.",
+      badges:["Water park","Rested","PM → Epic"],
+      lede:"A rested morning at the water park: chairs staked near Tot Tiki Reef, a TapuTapu band reserving Krakatau, and the rare luxury of eating lunch at seats you already hold — then after lunch the party splits and the coaster crew towels off to break off for an afternoon at Epic Universe while the littles peel off for naps.",
       slots:[
         {t:"7:30", type:"meal", tag:"Breakfast · Credit", text:"Breakfast at Bayliner; suit up — swim diapers, water shoes, dry bag. 🍳"},
         {t:"9:00", text:"Volcano Bay opens — chairs near Tot Tiki Reef; grab a TapuTapu band, reserve Krakatau in the virtual line. 🌋"},
         {t:"9:15", text:"Big kids: slides they like (Jace too — water slides are not coasters). Avia + Oz: Krakatau aqua coaster (Oz 42″), Honu raft. Grandma + Elowen: Tot Tiki + zero-entry. 🏄"},
         {t:"11:40", type:"meal", tag:"Order Ahead", text:"Mobile order — Whakawaiwai Eats (kid-friendly) or Kohola Reef. Order from your chairs for a 12:00–12:15 window. 📱"},
         {t:"12:00", type:"meal", tag:"Lunch", text:"Lunch at your chairs — you already have the seats (water-park advantage). 🍔"},
-        {t:"1:00", text:"Littles + Grandma walk back for naps; big kids + a parent stay for slides + Kopiko Wai lazy river. 😴"},
-        {t:"1:00–3:30", text:"Naps / pool for littles; slides for the big kids."},
-        {t:"3:30", text:"Reconvene — Cabana Bay pool or an easy float. 🏊"},
-        {t:"5:00", text:"Shower, rest."},
-        {t:"6:30", type:"meal", tag:"Dinner · Credit", text:"Dinner at Cabana Bay. 🍽️"},
-        {t:"Evening", text:"Easy night, pool / early bed. 🌙"}
+        {t:"1:00", type:"key", text:"Split the party. Grandma + Oz + Elowen head back to Cabana Bay for naps / pool / an easy float. You + the coaster crew (Avia, plus Jace for Epic's non-coaster rides) towel off and break off for Epic Universe. 🌋"},
+        {t:"~1:45", text:"Walk back to Cabana Bay and catch the Epic resort bus (~30–45 min from the hotel transportation hub). Confirm the pickup in the Universal app. 🚌"},
+        {t:"~2:30", type:"key", text:"Epic Universe — NO Express today (the 2-day Express is Thursday + Friday only). Tour single-rider + lower-wait: Celestial Park, Ministry of Magic (wand-casting + Butterbeer), Dark Universe. Ride Stardust Racers / Monsters Unchained via single-rider only if it's near walk-on. 🎢"},
+        {t:"~4:00", text:"Optional: activate the 3 Power-Up Bands at Super Nintendo World and play the key challenges (Mario Kart, Mine-Cart Madness). 🎮"},
+        {t:"6:00–6:30", type:"meal", tag:"Dinner · Split", text:"Resort crew eats at Cabana Bay on the dining credit; Epic crew grabs a mobile-order dinner in-park (Pizza Moon / Burning Blade, out of pocket). 🍽️"},
+        {t:"7:30", text:"Celestial Park fireworks (Epic crew). 🎆"},
+        {t:"~9:00", text:"Bus back to Cabana Bay. 🚌"}
       ],
       crew:[
         {k:"Family", v:"Grandma + Elowen at Tot Tiki Reef & zero-entry."},
         {k:"Big Kids", v:"Jace included — water slides aren't coasters."},
         {k:"Avia+Oz", v:"Krakatau aqua coaster (Oz 42″), Honu raft."},
-        {k:"Express", v:"Does not apply — never works at Volcano Bay."}
+        {k:"Express", v:"None today — Volcano Bay never has it, and the PM Epic break-off has no Express (that's Thu + Fri)."}
       ],
       dining:[
         {k:"Bkfst", v:"Bayliner, on the credit."},
         {k:"Lunch", v:"Whakawaiwai Eats or Kohola Reef, ordered from your chairs."},
-        {k:"Dinner", v:"Cabana Bay, on the credit."}
+        {k:"Dinner", v:"Resort crew: Cabana Bay, on the credit. Epic crew: mobile order in-park (Pizza Moon / Burning Blade, out of pocket)."}
       ],
-      alert:null
+      alert:"Heads-up: the Epic group has NO Express today — your 2-day Express is Thursday + Friday only. Entry's fine on the 5-Day Park-to-Park ticket, but save the headliner coasters (Stardust Racers, Monsters Unchained) for Thursday's Express day."
     },
     {
       no:3, id:"wed", weekday:"Wednesday", date:"June 17, 2026", dateISO:"2026-06-17",

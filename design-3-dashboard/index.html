@@ -410,25 +410,26 @@ const TRIP = [
     id:"tue", dayLabel:"Tue", short:"Volcano Bay", date:"Tuesday · Jun 16",
     title:"Volcano Bay", park:"Water park day",
     accent:"#17A8A4",
-    badges:["Water park","Rested"],
+    badges:["Water park","Rested","PM → Epic"],
     glance:[
       {l:"First ride", v:"Krakatau (virtual line) 🌋"},
       {l:"Lunch", v:"At your chairs 🏖️"},
-      {l:"Dinner", v:"Cabana Bay (credit) 🍽️"}
+      {l:"Dinner", v:"Cabana Bay credit / Epic mobile 🍽️"}
     ],
-    alert:null,
+    alert:"Heads-up: the Epic group has NO Express today — your 2-day Express is Thursday + Friday only. Entry's fine on the 5-Day Park-to-Park ticket, but save the headliner coasters (Stardust Racers, Monsters Unchained) for Thursday's Express day.",
     slots:[
       {t:"7:30", x:"<b>Breakfast at Bayliner</b> (credit); suit up — swim diapers, water shoes, dry bag", m:"meal"},
       {t:"9:00", x:"<b>Volcano Bay opens</b> — chairs near Tot Tiki Reef; grab a TapuTapu band, reserve Krakatau in the virtual line"},
       {t:"9:15", x:"Big kids: slides they like (Jace too — water slides are not coasters). Avia + Oz: Krakatau aqua coaster (Oz 42\"), Honu raft. Grandma + Elowen: Tot Tiki + zero-entry", oz:"yes"},
       {t:"11:40", x:"<b>Mobile order — Whakawaiwai Eats</b> (kid-friendly) or Kohola Reef. Order from your chairs for a 12:00–12:15 window", m:"meal"},
       {t:"12:00", x:"<b>Lunch at your chairs</b> — you already have the seats (water-park advantage)", m:"meal"},
-      {t:"1:00", x:"Littles + Grandma walk back for naps; big kids + a parent stay for slides + Kopiko Wai lazy river"},
-      {t:"1:00–3:30", x:"Naps / pool for littles; slides for the big kids"},
-      {t:"3:30", x:"Reconvene — Cabana Bay pool or an easy float"},
-      {t:"5:00", x:"Shower, rest"},
-      {t:"6:30", x:"<b>Dinner at Cabana Bay</b> (credit)", m:"meal"},
-      {t:"Evening", x:"Easy night, pool / early bed"}
+      {t:"1:00", x:"<b>Split the party.</b> Grandma + Oz + Elowen head back to Cabana Bay for naps / pool / an easy float. You + the coaster crew (Avia, plus Jace for Epic's non-coaster rides) towel off and <b>break off for Epic Universe</b>", m:"key", crew:["coaster"]},
+      {t:"~1:45", x:"Walk back to Cabana Bay and catch the <b>Epic resort bus</b> (~30–45 min from the hotel transportation hub). Confirm the pickup in the Universal app", crew:["coaster"]},
+      {t:"~2:30", x:"<b>Epic Universe — NO Express today</b> (the 2-day Express is Thursday + Friday only). Tour single-rider + lower-wait: Celestial Park, Ministry of Magic (wand-casting + Butterbeer), Dark Universe. Ride Stardust Racers / Monsters Unchained via single-rider only if it's near walk-on", m:"key", crew:["coaster"]},
+      {t:"~4:00", x:"Optional: <b>activate the 3 Power-Up Bands</b> at Super Nintendo World and play the key challenges (Mario Kart, Mine-Cart Madness)", crew:["coaster"], oz:"yes"},
+      {t:"6:00–6:30", x:"<b>Dinner:</b> the resort crew eats at Cabana Bay on the dining credit; the Epic crew grabs a <b>mobile-order dinner in-park</b> (Pizza Moon / Burning Blade, out of pocket)", m:"meal"},
+      {t:"7:30", x:"<b>Celestial Park fireworks</b> (Epic crew)", crew:["coaster"]},
+      {t:"~9:00", x:"Bus back to Cabana Bay", crew:["coaster"]}
     ]
   },
   {
